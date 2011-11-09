@@ -1,19 +1,9 @@
 
-const Instruction_NoOp = 0;
-const Instruction_Exec = 1;
-const Instruction_JumpToTag = 2;
-const Instruction_ConditionalJumpToTag = 3;
-
-var InstructionNames = [];
-InstructionNames[Instruction_NoOp] = "NoOp";
-InstructionNames[Instruction_Exec] = "Exec";
-InstructionNames[Instruction_JumpToTag] = "JumpToTag";
-InstructionNames[Instruction_ConditionalJumpToTag] = "ConditionalJumpToTag";
-
 function Machine() {
     // program stuff
-    this.program = [];
+    //this.program = [];
     this.tags = [];
+	this.program = null;
     
     // machine stuff
     this.instructionPointer = 0;
@@ -23,16 +13,12 @@ function Machine() {
 
 // Program Management
 
-Machine.prototype.addInstruction = function (instruction, arg1) {
-    this.program.push([instruction, arg1]);
+Machine.prototype.loadProgram = function (aProgram) {
+	this.program = aProgram;
 }
 
-Machine.prototype.setTag = function (tagID) {
-    this.tags[tagID] = this.program.length;
-}
-
-Machine.prototype.getTag = function (tagID) {
-    return this.tags[tagID];
+Machine.prototype.getProgram = function () {
+	return this.program;
 }
 
 // Running code
@@ -42,7 +28,8 @@ Machine.prototype.getInstructionPointer = function () {
 }
 
 Machine.prototype.cycle = function () {
-    var currentInstruction = this.program[this.instructionPointer];
+    //var currentInstruction = this.program[this.instructionPointer];
+	var currentInstruction = this.getProgram().getInstruction(this.instructionPointer);
     var iType = currentInstruction[0];
     var iArg1 = currentInstruction[1];        
     
@@ -65,7 +52,7 @@ Machine.prototype.cycle = function () {
             break;
         
         case Instruction_JumpToTag:
-            this.instructionPointer = this.getTag(iArg1);
+            this.instructionPointer = this.program.getTag(iArg1);
             if (this.debugTrace == true) {
                 console.log("... cycle-extra: ip=" + this.instructionPointer);
             }
@@ -73,7 +60,7 @@ Machine.prototype.cycle = function () {
         
         case Instruction_ConditionalJumpToTag:
             if (this.conditionalFlag == true) {
-                this.instructionPointer = this.getTag(iArg1);
+                this.instructionPointer = this.program.getTag(iArg1);
                 if (this.debugTrace == true) {
                     console.log("... cycle-extra: ip=" + this.instructionPointer);
                 }
@@ -85,7 +72,11 @@ Machine.prototype.cycle = function () {
 }
 
 Machine.prototype.run = function () {
-    while (this.instructionPointer < this.program.length) {
+	if (this.program == null) {
+		return;
+	}
+
+    while (this.instructionPointer < this.program.countInstructions()) {
         this.cycle();
     }
 }
