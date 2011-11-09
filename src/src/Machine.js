@@ -1,9 +1,17 @@
 
+// var codeA = new Function("console.log('foo: ' + this.foo);  this.foo = 'BAR';");
+// var codeB = new Function("console.log('foo: ' + this['foo']);");
+// var myObject = new Array();
+// myObject["foo"] = "FOO!";
+// codeA.call(myObject);
+// codeB.call(myObject);
+
 function Machine() {
     // program stuff
     //this.program = [];
     this.tags = [];
 	this.program = null;
+	this.execEnvironment = null;
     
     // machine stuff
     this.instructionPointer = 0;
@@ -19,6 +27,12 @@ Machine.prototype.loadProgram = function (aProgram) {
 
 Machine.prototype.getProgram = function () {
 	return this.program;
+}
+
+// Environment management
+
+Machine.prototype.setExecEnvironment = function (env) {
+	this.execEnvironment = env;
 }
 
 // Running code
@@ -47,7 +61,7 @@ Machine.prototype.cycle = function () {
             break;
         
         case Instruction_Exec:
-            this.conditionalFlag = (iArg1() == true);
+            this.conditionalFlag = (iArg1.call(this.execEnvironment) == true);
             this.instructionPointer++;
             break;
         

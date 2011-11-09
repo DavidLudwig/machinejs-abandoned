@@ -40,6 +40,28 @@ describe("Machine", function () {
 	        expect(theMachine.getInstructionPointer()).toEqual(1);
 	    });
 	
+		it("can pass a custom 'this' environment to Exec'ed functions", function () {
+			var recordedVar = null;
+			theProgram.addInstruction(Instruction_Exec, function () { recordedVar = this; });
+			theMachine.loadProgram(theProgram);
+			var theExecEnv = new Array();
+			theMachine.setExecEnvironment(theExecEnv);
+			theMachine.run();
+			
+			expect(recordedVar).toBe(theExecEnv);
+		});
+		
+		/*
+		it("can share a common environment to each Exec'ed function, which is null by default", function () {
+			var recordedVar = null;
+			theProgram.addInstruction(Instruction_Exec, function () { recordedVar = this; });
+			theMachine.loadProgram(theProgram);
+			theMachine.run();
+			
+			expect(recordedVar).toBeNull();
+		});
+		*/
+	
 		it("can run multiple instructions, in order", function () {
 	        var counter = 0;
 	        var counterAtInstructionOne = null;
