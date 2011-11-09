@@ -61,7 +61,9 @@ Assembler.prototype.assemble = function (code) {
 				theProgram.addInstruction(Instruction_ConditionalJumpToTag, tagName);
 				break;
 			
-			//case ""
+			case "break":
+				theProgram.addInstruction(Instruction_Break);
+				break;
 		}
 	}
 	

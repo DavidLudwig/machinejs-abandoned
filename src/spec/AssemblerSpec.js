@@ -92,6 +92,16 @@ describe("Assembler", function () {
 		expect(theProgram.getInstruction(3)[1]).toEqual("Loop Start");
 	});
 	
+	it("can assemble Break instructions", function () {
+		var code = "noop \n\
+					break \n\
+					noop \n\
+					break";
+		var theProgram = theAssembler.assemble(code);
+		expect(theProgram.getInstruction(1)).toBeInstructionOfType(Instruction_Break);
+		expect(theProgram.getInstruction(3)).toBeInstructionOfType(Instruction_Break);
+	});
+	
 	describe("With Code Execution", function () {
 		theMachine = null;
 		
