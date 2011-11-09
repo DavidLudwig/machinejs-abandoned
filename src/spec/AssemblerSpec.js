@@ -65,6 +65,21 @@ describe("Assembler", function () {
 		expect(theProgram.getTag("Position With Spaces")).toEqual(2);
 		expect(theProgram.getTag("Final Position")).toEqual(3);
 	});
+	
+	it("can assemble jump-to-tag instructions", function () {
+		var code = "jump Later \n\
+					noop \n\
+					:Later \n\
+					jump Even Later \n\
+					noop \n\
+					noop \n\
+					:Even Later";
+		var theProgram = theAssembler.assemble(code);
+		expect(theProgram.getInstruction(0)).toBeInstructionOfType(Instruction_JumpToTag);
+		expect(theProgram.getInstruction(0)[1]).toEqual("Later");
+		expect(theProgram.getInstruction(2)).toBeInstructionOfType(Instruction_JumpToTag);
+		expect(theProgram.getInstruction(2)[1]).toEqual("Even Later");
+	});
 		
 	describe("With Code Execution", function () {
 		theMachine = null;
