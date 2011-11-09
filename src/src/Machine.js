@@ -1,9 +1,9 @@
 
-// var codeA = new Function("console.log('foo: ' + this.foo);  this.foo = 'BAR';");
+//var codeA = new Function("console.log('foo: ' + this.foo);  this.foo = 'BAR';");
 // var codeB = new Function("console.log('foo: ' + this['foo']);");
 // var myObject = new Array();
 // myObject["foo"] = "FOO!";
-// codeA.call(myObject);
+//codeA.call(myObject);
 // codeB.call(myObject);
 
 var codeC = new Function("console.log('hi'); return 1 + 3;");
@@ -19,6 +19,7 @@ function Machine() {
     // machine stuff
     this.instructionPointer = 0;
     this.conditionalFlag = false;
+	this.breakFlag = false;
     this.debugTrace = false;
 }
 
@@ -85,15 +86,22 @@ Machine.prototype.cycle = function () {
                 this.instructionPointer++;
             }
             break;
+
+		case Instruction_Break:
+			this.breakFlag = true;
+			this.instructionPointer++;
+			break;
     }
 }
 
 Machine.prototype.run = function () {
+	this.breakFlag = false;
+	
 	if (this.program == null) {
 		return;
 	}
-
-    while (this.instructionPointer < this.program.countInstructions()) {
+	
+    while (this.instructionPointer < this.program.countInstructions() && this.breakFlag == false) {
         this.cycle();
     }
 }

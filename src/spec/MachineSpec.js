@@ -156,5 +156,19 @@ describe("Machine", function () {
 	        expect(results[2]).toEqual("true");
 	        expect(results[3]).toEqual("false");
 	    });
+	
+		it("can be paused via the Break instruction, and later resumed", function () {
+			var counter = 0;
+			theProgram.addInstruction(Instruction_Exec, function () { counter++; });
+			theProgram.addInstruction(Instruction_Break);
+			theProgram.addInstruction(Instruction_Exec, function () { counter++; });
+			theProgram.addInstruction(Instruction_Exec, function () { counter++; });
+			theProgram.addInstruction(Instruction_Exec, function () { counter++; });
+			theMachine.loadProgram(theProgram);
+			theMachine.run();
+			expect(counter).toEqual(1);
+			theMachine.run();
+			expect(counter).toEqual(4);
+		});
 	});
 });
