@@ -51,7 +51,7 @@ Assembler.prototype.assemble = function (code) {
 				theProgram.addInstruction(Instruction_Exec, theFunction);
 				break;
 			
-			case "jump":
+			case "jmp":
 				var tagName = codeLine.replace(/^[a-z]+ /, "");
 				theProgram.addInstruction(Instruction_JumpToTag, tagName);
 				break;

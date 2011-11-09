@@ -67,10 +67,10 @@ describe("Assembler", function () {
 	});
 	
 	it("can assemble jump-to-tag instructions", function () {
-		var code = "jump Later \n\
+		var code = "jmp Later \n\
 					noop \n\
 					:Later \n\
-					jump Even Later \n\
+					jmp Even Later \n\
 					noop \n\
 					noop \n\
 					:Even Later";
