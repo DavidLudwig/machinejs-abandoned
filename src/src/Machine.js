@@ -87,6 +87,7 @@ Machine.prototype.cycle = function () {
             }
             break;
 
+		default:	// Prevent lockups from invalid instructions by simply breaking.
 		case Instruction_Break:
 			this.breakFlag = true;
 			this.instructionPointer++;
