@@ -80,7 +80,18 @@ describe("Assembler", function () {
 		expect(theProgram.getInstruction(2)).toBeInstructionOfType(Instruction_JumpToTag);
 		expect(theProgram.getInstruction(2)[1]).toEqual("Even Later");
 	});
-		
+	
+	it("can assemble conditional-jump-to-tag instructions", function () {
+		var code = "exec this.n = 5					\n\
+					:Loop Start						\n\
+						exec	this.n--			\n\
+						exec	return (this.n > 0)	\n\
+						jmpcond Loop Start";
+		var theProgram = theAssembler.assemble(code);
+		expect(theProgram.getInstruction(3)).toBeInstructionOfType(Instruction_ConditionalJumpToTag);
+		expect(theProgram.getInstruction(3)[1]).toEqual("Loop Start");
+	});
+	
 	describe("With Code Execution", function () {
 		theMachine = null;
 		

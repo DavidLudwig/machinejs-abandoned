@@ -6,6 +6,9 @@
 // codeA.call(myObject);
 // codeB.call(myObject);
 
+var codeC = new Function("console.log('hi'); return 1 + 3;");
+console.log(codeC.call());
+
 function Machine() {
     // program stuff
     //this.program = [];
