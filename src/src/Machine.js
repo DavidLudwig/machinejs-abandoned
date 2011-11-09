@@ -2,11 +2,13 @@
 const Instruction_NoOp = 0;
 const Instruction_Exec = 1;
 const Instruction_JumpToTag = 2;
+const Instruction_ConditionalJumpToTag = 3;
 
 var InstructionNames = [];
 InstructionNames[Instruction_NoOp] = "NoOp";
 InstructionNames[Instruction_Exec] = "Exec";
 InstructionNames[Instruction_JumpToTag] = "JumpToTag";
+InstructionNames[Instruction_ConditionalJumpToTag] = "ConditionalJumpToTag";
 
 function Machine() {
     // program stuff
@@ -15,6 +17,7 @@ function Machine() {
     
     // machine stuff
     this.instructionPointer = 0;
+    this.conditionalFlag = false;
     this.debugTrace = false;
 }
 
@@ -57,7 +60,7 @@ Machine.prototype.cycle = function () {
             break;
         
         case Instruction_Exec:
-            iArg1();
+            this.conditionalFlag = (iArg1() == true);
             this.instructionPointer++;
             break;
         
@@ -65,6 +68,17 @@ Machine.prototype.cycle = function () {
             this.instructionPointer = this.getTag(iArg1);
             if (this.debugTrace == true) {
                 console.log("... cycle-extra: ip=" + this.instructionPointer);
+            }
+            break;
+        
+        case Instruction_ConditionalJumpToTag:
+            if (this.conditionalFlag == true) {
+                this.instructionPointer = this.getTag(iArg1);
+                if (this.debugTrace == true) {
+                    console.log("... cycle-extra: ip=" + this.instructionPointer);
+                }
+            } else {
+                this.instructionPointer++;
             }
             break;
     }

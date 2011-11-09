@@ -110,5 +110,30 @@ describe("Machine", function () {
         expect(didInstructionARun).toBeTruthy();
         expect(didInstructionBRun).toBeFalsy();
         expect(didInstructionCRun).toBeTruthy();
-    })  
+    })
+    
+    it("allows branching via the Exec instruction argument's return value", function () {
+        var aFlag = false;
+        var results = [];
+        
+        theMachine.setTag("start");
+        theMachine.addInstruction(Instruction_Exec, function () { aFlag = !aFlag; return aFlag; });
+        theMachine.addInstruction(Instruction_ConditionalJumpToTag, "is true");
+        theMachine.addInstruction(Instruction_JumpToTag, "is false");
+        theMachine.setTag("is true");
+        theMachine.addInstruction(Instruction_Exec, function () { results.push("true"); });
+        theMachine.addInstruction(Instruction_JumpToTag, "start");
+        theMachine.setTag("is false");
+        theMachine.addInstruction(Instruction_Exec, function () { results.push("false"); });
+        theMachine.addInstruction(Instruction_JumpToTag, "start");
+        
+        for (var i = 0; i < 17; i++) {
+            theMachine.cycle();
+        }
+        
+        expect(results[0]).toEqual("true");
+        expect(results[1]).toEqual("false");
+        expect(results[2]).toEqual("true");
+        expect(results[3]).toEqual("false");
+    });
 })
